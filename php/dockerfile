@@ -1,0 +1,21 @@
+FROM php:7.4-apache
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends sqlite3=3.* locales apt-utils git libicu-dev g++ libpng-dev libxml2-dev libzip-dev libonig-dev libxslt-dev nodejs npm;
+
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
+    locale-gen
+
+RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
+   mv composer.phar /usr/local/bin/composer
+
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install pdo gd opcache intl zip calendar dom mbstring zip gd xsl
+RUN pecl install apcu && docker-php-ext-enable apcu
+RUN npm install --global yarn
+RUN echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list
+RUN apt update
+RUN apt install symfony-cli
+
+WORKDIR /var/www/
