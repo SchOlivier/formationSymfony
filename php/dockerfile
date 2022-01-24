@@ -18,4 +18,6 @@ RUN echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sour
 RUN apt update
 RUN apt install symfony-cli
 
+RUN cp /usr/local/etc/php/php.ini-development  /usr/local/etc/php/php.ini
+
 WORKDIR /var/www/

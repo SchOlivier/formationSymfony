@@ -29,7 +29,9 @@ services:
           - "8741:80"
         volumes:
             - ./php/vhosts:/etc/apache2/sites-enabled
-            - ./:/var/www
+            - ./where-to-eat-2401:/var/www/project
+            - vendor:/var/www/project/vendor
+            - var:/var/www/var
         restart: always
         networks:
             - dev
@@ -37,3 +39,5 @@ networks:
     dev:
 volumes:
     db-data:
+    vendor:
+    var:
