@@ -34,9 +34,9 @@ class RestaurantController extends AbstractController
     public function list(): Response
     {
         $restaurants = $this->restaurantRepository->findAll();
+        //$restaurants = $this->getRestaurants();
 
-        return $this->json($restaurants, 200, [], ['groups' => ['restaurantList']]);
-        // return $this->json($restaurants, 200, [], ['groups' => []]);
+        return $this->json($restaurants, 200, [], ['action' => ['list']]);
     }
 
     /**
@@ -49,11 +49,8 @@ class RestaurantController extends AbstractController
     {
         $restaurant = $this->restaurantRepository->findOneById($id);
 
-        // return $this->json($restaurant, 200, [], [AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function($object, $format, $context) {
-        //     return $object->getId();
-        // }]);
-
-        return $this->json($restaurant, 200, [], []);
+        return $this->json($restaurant, 200, []);
+        //return new Response(json_encode($restaurant), 200, ['content-type' => 'application/json']);
     }
 
     private function getRestaurants(){
