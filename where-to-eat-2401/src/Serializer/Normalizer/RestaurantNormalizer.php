@@ -39,7 +39,7 @@ class RestaurantNormalizer implements ContextAwareNormalizerInterface
         return $restaurantArray;
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof \App\Entity\Restaurant;
     }

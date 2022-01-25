@@ -24,7 +24,10 @@ Depuis le répertoire du projet :
 
 - Utile : on peut jouer des commandes sql avec `symfony console dbal:run-sql 'select * from user'`
 
-
+# tests
+- `symfony console make:test`
+- Lancer les tests : bin/phpunit
+- Pour ne pas pourrir les BDD : https://github.com/dmaicher/doctrine-test-bundle
 
 # Divers
 - Requête Curl pour tester une api : `curl -X POST http://localhost:8000/users -H 'Content-Type: application/json' -d '{"firstName": "Joseph"}'`
@@ -34,7 +37,9 @@ controller.php
 <?php
 $userList = new ArrayAdapter([$user1, $user2, $user3, $user4, '...']);
 $pagerfanta = new Pagerfanta($userList);
-$this->serializer->serialize($pagerfanta, 'json');```
+$this->serializer->serialize($pagerfanta, 'json');
+```
+
 ```php
 <?php
 namespace App\Serializer;

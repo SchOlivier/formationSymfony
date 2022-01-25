@@ -33,7 +33,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("", name="all")
+     * @Route("", name="all", methods="GET")
      */
     public function list(): Response
     {
@@ -80,21 +80,6 @@ class UserController extends AbstractController
         $this->em->flush();
         
         return $this->json($user, 200);
-    }
-
-    /**
-     * @TODO Should be in the repository (if I had a database...)-
-     */
-    private function findUserById($id){
-        $myUser = new User();
-        switch($id){
-            case 1:
-                $myUser->setEmail("oscharff@inpi.fr")->setFirstName('Olivier')->setLastName('Scharff');
-                break;
-            default:
-                $myUser->setEmail("jeanJean@inpi.fr")->setFirstName('Jean')->setLastName('Jean');
-        }
-        return $myUser;
     }
 
     private function runValidation($user){

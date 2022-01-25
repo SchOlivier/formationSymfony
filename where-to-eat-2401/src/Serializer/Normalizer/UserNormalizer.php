@@ -21,16 +21,16 @@ class UserNormalizer implements ContextAwareNormalizerInterface
 
         if (isset($context['action']) && in_array('list', $context['action'])) {
             return [
-                $userArray['firstName'],
-                $userArray['lastName'],
-                $userArray['email']
+                'firstName' => $userArray['firstName'],
+                'lastName' => $userArray['lastName'],
+                'email' => $userArray['email']
             ];
         }
 
         return $userArray;
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof \App\Entity\User;
     }
