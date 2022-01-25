@@ -11,6 +11,12 @@ Depuis le répertoire du projet :
 - Créer une entité : `symfony console make:entity`, permet d'ajouter les attributs, getters, setter, et même de définir les relations (oneToMany, ...). Peut-être réutilisée sur une entité créée auparavant si on veut ajouter des attributs.
 - Voir la config : `symfony console config:dump`, generalement `symfony console config:dump framework`
 - Faire un serializer : `symfony console make:serialize:normalizer` -> utile quant on veut remonter uniquement certains attributs en fonction d'un contexte donné (listAll, showOne).
+- [Profiler](http://localhost:8741/_profiler/) (pour voir les dernières requêtes et les erreurs)
+
+# Validatateurs
+- On peut définir dans les entités des contraintes à respecter sur les attributs avec `Symfony\Component\Validator\Constraints`. On met ça sous forme d'annotations dans les attributs, voir [la doc](https://symfony.com/doc/current/reference/constraints.html).
+- Exemples dans la classe `src\Entity\User.php`
+- On peut lier les contraintes ORM aux contraintes validateur automatiquement en décommentant l'auto-mapping dans `config\packages\validator.yaml`
 
 # Divers
 - Requête Curl pour tester une api : `curl -X POST http://localhost:8000/users -H 'Content-Type: application/json' -d '{"firstName": "Joseph"}'`

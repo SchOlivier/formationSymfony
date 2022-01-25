@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * mettre la route dans la classe permet de préfixer toutes les actions
@@ -16,18 +17,32 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class UserController extends AbstractController
 {
+    private $validator;
+    private $serializer;
+
+    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer)
+    {
+        $this->validator = $validator;
+        $this->serializer = $serializer;
+    }
+
     /**
      * @Route("", name="create", methods="POST", defaults={"_format":"json"})
      */
-    public function create(Request $request, SerializerInterface $serializer): Response
+    public function create(Request $request): Response
     {
         $newUserInfo = $request->getContent();
 
-        $user = $serializer->deserialize($newUserInfo, User::class, 'json');
-        
+        $user = $this->serializer->deserialize($newUserInfo, User::class, 'json');
+
+        if ($errors = $this->runValidation($user)){
+            return $errors;
+        };
+
         // @TODO Insert in database
         dump($user);
         
+
         return $this->json($user, 201); // Statut 201 = created
     }
 
@@ -36,11 +51,15 @@ class UserController extends AbstractController
      * 
      * @return void
      */
-    public function update($id, Request $request, SerializerInterface $serializer){
+    public function update($id, Request $request){
         $newUserInfo = $request->getContent();
 
-        $user = $serializer->deserialize($newUserInfo, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $this->findUserById($id)]);
-
+        $user = $this->serializer->deserialize($newUserInfo, User::class, 'json', [
+            AbstractNormalizer::OBJECT_TO_POPULATE => $this->findUserById($id),
+        ]);
+        if ($errors = $this->runValidation($user)){
+            return $errors;
+        };
         dump($user);
         return $this->json($user, 200);
     }
@@ -58,5 +77,12 @@ class UserController extends AbstractController
                 $myUser->setEmail("jeanJean@inpi.fr")->setFirstName('Jean')->setLastName('Jean');
         }
         return $myUser;
+    }
+
+    private function runValidation($user){
+        $errors = $this->validator->validate($user);
+        if (count($errors) > 0){
+            return $this->json($errors, 422);
+        }
     }
 }

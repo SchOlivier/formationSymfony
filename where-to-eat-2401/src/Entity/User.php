@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -30,11 +31,13 @@ class User
 
     /**
      * @ORM\Column(type="string", length=80)
+     * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=6, max=20)
      */
     private $password;
 
@@ -89,5 +92,12 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @Assert\IsTrue(message="Votre mot de passe ne doit pas contenir votre email")
+     */
+    public function isValidPassword(){
+        return (false === strpos($this->password, $this->email));
     }
 }
