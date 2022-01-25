@@ -17,6 +17,14 @@ Depuis le répertoire du projet :
 - On peut définir dans les entités des contraintes à respecter sur les attributs avec `Symfony\Component\Validator\Constraints`. On met ça sous forme d'annotations dans les attributs, voir [la doc](https://symfony.com/doc/current/reference/constraints.html).
 - Exemples dans la classe `src\Entity\User.php`
 - On peut lier les contraintes ORM aux contraintes validateur automatiquement en décommentant l'auto-mapping dans `config\packages\validator.yaml`
+- `symfony console make:validator` permet de faire un validateur custom, on peut aussi faire des Traits.
+
+# Doctrine
+- Il y a une gestion de versionning. On peut créer un diff entre l'existant en BDD et les entités doctrine définies avec : `symfony console make:migration`. Ca va créer un fichier PHP dans le répertoire `migrations` à la date du jour qui liste les commandes SQL à jouer pour upgrade (ou downgrade). On joue ensuite `symfony console doctrine:migrations:migrate` pour jouer tous les upgrades à la suite (s'il y en a plusieurs), dans l'ordre chronologique. Pour les downgrades, aucune idée...
+
+- Utile : on peut jouer des commandes sql avec `symfony console dbal:run-sql 'select * from user'`
+
+
 
 # Divers
 - Requête Curl pour tester une api : `curl -X POST http://localhost:8000/users -H 'Content-Type: application/json' -d '{"firstName": "Joseph"}'`

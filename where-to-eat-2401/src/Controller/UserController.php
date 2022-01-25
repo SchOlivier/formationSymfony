@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * mettre la route dans la classe permet de préfixer toutes les actions
@@ -19,11 +21,25 @@ class UserController extends AbstractController
 {
     private $validator;
     private $serializer;
+    private $em;
+    private $userRepo;
 
-    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer)
+    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, EntityManagerInterface $entityManager, UserRepository $userRepo)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
+        $this->em = $entityManager;
+        $this->userRepo = $userRepo;
+    }
+
+    /**
+     * @Route("", name="all")
+     */
+    public function list(): Response
+    {
+        $users = $this->userRepo->findAll();
+
+        return $this->json($users, 200, [], ['action' => ['list']]);
     }
 
     /**
@@ -39,9 +55,8 @@ class UserController extends AbstractController
             return $errors;
         };
 
-        // @TODO Insert in database
-        dump($user);
-        
+        $this->em->persist($user);
+        $this->em->flush();
 
         return $this->json($user, 201); // Statut 201 = created
     }
@@ -53,14 +68,17 @@ class UserController extends AbstractController
      */
     public function update($id, Request $request){
         $newUserInfo = $request->getContent();
+        $myUser = $this->userRepo->find($id);
 
         $user = $this->serializer->deserialize($newUserInfo, User::class, 'json', [
-            AbstractNormalizer::OBJECT_TO_POPULATE => $this->findUserById($id),
+            AbstractNormalizer::OBJECT_TO_POPULATE => $myUser,
         ]);
         if ($errors = $this->runValidation($user)){
             return $errors;
         };
-        dump($user);
+
+        $this->em->flush();
+        
         return $this->json($user, 200);
     }
 
