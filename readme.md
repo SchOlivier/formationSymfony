@@ -32,8 +32,8 @@ Depuis le répertoire du projet :
 # Divers
 - Requête Curl pour tester une api : `curl -X POST http://localhost:8000/users -H 'Content-Type: application/json' -d '{"firstName": "Joseph"}'`
 - Intégration d'un paginateur :
+controller.php:
 ```php
-controller.php
 <?php
 $userList = new ArrayAdapter([$user1, $user2, $user3, $user4, '...']);
 $pagerfanta = new Pagerfanta($userList);
